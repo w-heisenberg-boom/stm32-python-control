@@ -1,0 +1,1 @@
+Place the `JLinkARM.dll` file to `./utility/` path. Most likely, it will be on `C:\Program Files\SEGGER\JLink_V*version*` path

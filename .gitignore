@@ -1,0 +1,5 @@
+.vscode/
+utility/__pycache__/
+utility/JLinkARM.dll
+utility/modules/__pycache__/
+utility/modules/BSP/__pycache__/
