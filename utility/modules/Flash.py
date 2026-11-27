@@ -2,6 +2,31 @@ from typing import Callable
 from dataclasses import dataclass
 
 
+
+MANUFACTURER = {
+    0xEF: "Winbond",
+    0xC8: "GigaDevice",
+    0xC2: "Macronix",
+    0x9D: "ISSI",
+    0x20: "Micron",
+    0x5E: "Zbit",
+    0x85: "Puya" }
+
+MEMORY_TYPE = {
+    0x40: "SPI",
+    0x60: "QPI" }
+
+CAPACITY = {
+    0x12: "256 kB",
+    0x13: "512 kB",
+    0x14: "1 MB",
+    0x15: "2 MB",
+    0x16: "4 MB",
+    0x17: "8 MB",
+    0x18: "16 MB" }
+
+
+
 # ****************************************************************************************************
 #
 #  COMMANDS

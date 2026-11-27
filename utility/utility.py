@@ -27,6 +27,7 @@ class Application:
         nss_ports = [ "GPIOA", "GPIOB", "GPIOC", "GPIOD", "GPIOE", "GPIOF", "GPIOG", "GPIOH" ]
 
         self.fieldSPI = FieldSPISelection(self.root, spi_selections, nss_ports)
+        self.fieldFlashInfo = FieldFlashInformation(self.root)
         self.fieldFlash = FieldFlashCommands(self.root, self._cb_flash_ID, self._cb_flash_ERASE, self._cb_flash_STATUS)
         self.fieldJLink = FieldJLinkCommands(self.root, self._cb_JLink_HALT, self._cb_JLink_RESET)
 
@@ -46,14 +47,17 @@ class Application:
     def GUI(self):
         self.root.title("SPI Flash Proxy")
 
-        self.root.geometry("500x250")
+        self.root.geometry("640x250")
         self.root.resizable(True, True)
 
         self.fieldSPI.grid(row=0, column=0, sticky="ew", padx=15, pady=(10, 5))
         ttk.Separator(self.root, orient=tk.VERTICAL).grid(row=0, column=1, rowspan=1, sticky="ns", pady=(20, 20))
         self.fieldFlash.grid(row=0, column=2, sticky="ew", padx=15, pady=(10, 5))
-        ttk.Separator(self.root, orient=tk.HORIZONTAL).grid(row=1, column=0, columnspan=3, sticky="ew", padx=35)
-        self.fieldJLink.grid(row=2, column=0, columnspan=3, sticky="ew", padx=15, pady=(5, 5))
+        ttk.Separator(self.root, orient=tk.VERTICAL).grid(row=0, column=3, rowspan=1, sticky="ns", pady=(20, 20))
+        self.fieldFlashInfo.grid(row=0, column=4, sticky="ew", padx=15, pady=(10, 5))
+
+        ttk.Separator(self.root, orient=tk.HORIZONTAL).grid(row=1, column=0, columnspan=5, sticky="ew", padx=35)
+        self.fieldJLink.grid(row=2, column=0, columnspan=5, sticky="ew", padx=15, pady=(5, 5))
 
         self.root.columnconfigure(0, weight=1, uniform="fields")
         self.root.columnconfigure(2, weight=1, uniform="fields")
@@ -127,6 +131,13 @@ class Application:
 
 
 # Flash
+
+    def _get_str_from_hash(self, hash, code):
+        result = hash.get(code)
+        if not result:
+            return f"Unknown (0x{code:02X})"
+        return result
+    
     def _cb_flash_ID(self):
         try:
             self._configure_spi()
@@ -134,8 +145,10 @@ class Application:
         except Exception as e:
             print(f"Read flash ID failed: {e}")
             return
-
-        print(f"{''.join('{:02X} '.format(x) for x in res)}")
+        
+        self.fieldFlashInfo.SetField(FieldFlashInformation.InfoType.Manufacturer, self._get_str_from_hash(MANUFACTURER, res[0]))
+        self.fieldFlashInfo.SetField(FieldFlashInformation.InfoType.MemoryType, self._get_str_from_hash(MEMORY_TYPE, res[1]))
+        self.fieldFlashInfo.SetField(FieldFlashInformation.InfoType.Capacity, self._get_str_from_hash(CAPACITY, res[2]))
 
 
     def _cb_flash_ERASE(self):

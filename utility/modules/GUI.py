@@ -1,8 +1,12 @@
 import re
+from enum import Enum
 from typing import Callable
 from dataclasses import dataclass
 import tkinter as tk
 from tkinter import ttk
+
+
+INFORMATION_LABEL_FONT = ("Cascadia Code", 11, "bold")
 
 
 def PlaceOnCenter(window: tk.Toplevel):
@@ -26,11 +30,40 @@ def PlaceOnCenter(window: tk.Toplevel):
 
 
 
+
 # ****************************************************************************************************
 #
+#  Widgets
+#
+# ****************************************************************************************************
+
+# **************************************************
+#  Information label
+# **************************************************
+
+class InformationLabel(ttk.Frame):
+    def __init__(self, parent, text: str, value: str = "-"):
+        super().__init__(parent)
+
+        self._text = text
+        self._value = value
+
+        self._label = tk.Label(self, text=f"{self._text}: {self._value}", font=INFORMATION_LABEL_FONT)
+        self._label.pack()
+
+# API
+    def set(self, value: str):
+        self._value = value
+        self._label.config(text=f"{self._text}: {self._value}")
+
+    @property
+    def value(self) -> str:
+        return self._value
+
+
+# **************************************************
 #  Number entry
-#
-# ****************************************************************************************************
+# **************************************************
 
 # DEC or HEX
 class EntryNumber(ttk.Entry):
@@ -54,6 +87,8 @@ class EntryNumber(ttk.Entry):
             return True
 
         return True
+
+
 
 
 
@@ -251,6 +286,48 @@ class FieldSPISelection(ttk.Frame):
         return self._val_nss_pin.get()        
 
 
+# **************************************************
+#  Flash Information
+# **************************************************    
+
+class FieldFlashInformation(ttk.Frame):
+    class InfoType(Enum):
+        Manufacturer    = 0
+        MemoryType      = 1
+        Capacity        = 2
+        UniqueID        = 3
+
+    def __init__(self, parent):
+        super().__init__(parent)
+        self._parent = parent
+
+
+        self._manufacturer = InformationLabel(self, "Manufacturer")
+        self._manufacturer.grid(row=0, column=0, sticky="ew")
+
+        self._memory_type = InformationLabel(self, "Memory Type")
+        self._memory_type.grid(row=1, column=0, sticky="ew")
+
+        self._capacity = InformationLabel(self, "Capacity")
+        self._capacity.grid(row=2, column=0, sticky="ew")
+
+        self._unique_id = InformationLabel(self, "Unique ID")
+        self._unique_id.grid(row=3, column=0, sticky="ew")
+        
+        self.columnconfigure(0, weight=1)
+
+    def SetField(self, info: InfoType, val: str):
+        if info == self.InfoType.Manufacturer:
+            self._manufacturer.set(val)
+        elif info == self.InfoType.MemoryType:
+            self._memory_type.set(val)
+        elif info == self.InfoType.Capacity:
+            self._capacity.set(val)
+        elif info == self.InfoType.UniqueID:
+            self._unique_id.set(val)                                    
+        else:
+            raise ValueError("Unknown info type for Flash Information!")
+
 
 # **************************************************
 #  Flash commands
@@ -276,9 +353,6 @@ class FieldFlashCommands(ttk.Frame):
         self._btn_ID.configure(state="normal" if state else "disabled")
         self._btn_ERASE.configure(state="normal" if state else "disabled")
         self._btn_STATUS.configure(state="normal" if state else "disabled")
-
-            
-
 
 
 # **************************************************
