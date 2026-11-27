@@ -130,18 +130,34 @@ class Application:
     def _cb_flash_ID(self):
         try:
             self._configure_spi()
-
             res =  self.flash.ID()
-            print(f"{''.join('{:02X} '.format(x) for x in res)}")
         except Exception as e:
             print(f"Read flash ID failed: {e}")
             return
 
+        print(f"{''.join('{:02X} '.format(x) for x in res)}")
+
+
     def _cb_flash_ERASE(self):
-        raise RuntimeError("TODO: Erase")
+        try:
+            self._configure_spi()
+            self.flash.WriteEnable()
+            self.flash.Erase()
+        except Exception as e:
+            print(f"Erase flash failed: {e}")
+            return
+        
+        print(f"Erase command was sended to flash")
+
 
     def _cb_flash_STATUS(self):
-        raise RuntimeError("TODO: Status")
+        try:
+            self._configure_spi()
+            res = self.flash.Status_1()
+            print(f"{''.join('{:02X} '.format(x) for x in bytes([res]))}")
+        except Exception as e:
+            print(f"Read flash Status 1 failed: {e}")
+            return
 
 
 

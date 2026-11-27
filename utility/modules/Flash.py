@@ -2,6 +2,155 @@ from typing import Callable
 from dataclasses import dataclass
 
 
+# ****************************************************************************************************
+#
+#  COMMANDS
+#
+# ****************************************************************************************************
+
+# Configuration and Status Commands
+FLASH_READ_STATUS_1 =                 0x05
+FLASH_READ_STATUS_2 =                 0x35
+FLASH_READ_STATUS_3 =                 0x15
+
+FLASH_WRITE_ENABLE =                  0x06
+FLASH_VOLATILE_SR_WRITE_ENABLE =       0x50
+FLASH_WRITE_DISABLE =                 0x04
+
+FLASH_WRITE_STATUS_1 =                0x01
+FLASH_WRITE_STATUS_2 =                0x31
+FLASH_WRITE_STATUS_3 =                0x11
+
+FLASH_ENTER_QPI_MODE =                0x38
+FLASH_EXIT_QPI_MODE =                 0xFF
+
+
+# Program and Erase Commands
+FLASH_PAGE_PROGRAM =                  0x02
+FLASH_QUAD_INPUT_PAGE_PROGRAM =       0x32
+
+FLASH_SECTOR_ERASE =                  0x20
+FLASH_BLOCK_ERASE =                   0xD8
+FLASH_HALF_BLOCK_ERASE =              0x52
+
+FLASH_CHIP_ERASE =                    0xC7
+FLASH_ERASE_PROGRAM_SUSPEND =         0x75
+FLASH_ERASE_PROGRAM_RESUME =          0x7A
+
+
+# Read Commands
+FLASH_READ_DATA =                     0x03
+
+FLASH_FAST_READ =                     0x0B
+FLASH_FAST_READ_DUAL_OUTPUT =         0x3B
+FLASH_FAST_READ_QUAD_OUTPUT =         0x6B
+
+FLASH_FAST_READ_DUAL_IO =             0xBB
+FLASH_FAST_READ_QUAD_IO =             0xEB
+FLASH_WORD_READ_QUAD_IO =             0xE7
+FLASH_OCTAL_WORD_READ_QUAD_IO =       0xE3
+
+FLASH_SET_READ_PARAMETERS =           0xC0
+FLASH_BURST_READ_WITH_WRAP =          0x0C
+FLASH_SET_BURST_WITH_WRAP =           0x77
+
+
+# Reset Commands
+FLASH_SOFTWARE_RESET_ENABLE =         0x66
+FLASH_SOFTWARE_RESET =                0x99
+
+
+# ID and Security Commands
+FLASH_DEEP_POWER_DOWN =               0xB9
+FLASH_RELEASE_POWER_DOWN =             0xAB
+
+FLASH_DEVICE_ID =                     0xAB
+
+FLASH_READ_IDENTIFICATION =            0x9F
+FLASH_ID_MANUFACTURER_IDX =            0
+FLASH_ID_MEMORY_TYPE_IDX =             1
+FLASH_ID_CAPACITY_IDX =                2
+
+FLASH_READ_SFDP_REGISTERS =           0x5A
+FLASH_MANUFACTURER_DEVICE_ID =         0x90
+
+FLASH_ERASE_SECURITY_REGISTERS =      0x44
+FLASH_PROGRAM_SECURITY_REGISTERS =    0x42
+FLASH_READ_SECURITY_REGISTERS =       0x48
+
+FLASH_MANUFACTURER_DEVICE_ID_DUAL =   0x92
+FLASH_MANUFACTURER_DEVICE_ID_QUAD =   0x94
+
+FLASH_UNIQUE_ID_NUMBER =               0x4B
+
+
+# Lock Commands
+FLASH_INDIVIDUAL_BLOCK_SECTOR_LOCK =   0x36
+FLASH_INDIVIDUAL_BLOCK_SECTOR_UNLOCK = 0x39
+
+FLASH_READ_BLOCK_SECTOR_LOCK =         0x3D
+
+FLASH_GLOBAL_BLOCK_SECTOR_LOCK =       0x7E
+FLASH_GLOBAL_BLOCK_SECTOR_UNLOCK =     0x98
+
+
+# **************************************************
+# STATUS REGISTERS
+# **************************************************
+
+# Status Register 1
+FLASH_ST1_BUSY_BIT =                   0
+FLASH_ST1_WEL_BIT =                    1
+FLASH_ST1_BP0_BIT =                    2
+FLASH_ST1_BP1_BIT =                    3
+FLASH_ST1_BP2_BIT =                    4
+FLASH_ST1_TB_BIT =                     5
+FLASH_ST1_SEC_BIT =                    6
+FLASH_ST1_SRP0_BIT =                   7
+
+FLASH_ST1_BUSY =                       (1 << FLASH_ST1_BUSY_BIT)
+FLASH_ST1_WEL =                        (1 << FLASH_ST1_WEL_BIT)
+FLASH_ST1_BP0 =                        (1 << FLASH_ST1_BP0_BIT)
+FLASH_ST1_BP1 =                        (1 << FLASH_ST1_BP1_BIT)
+FLASH_ST1_BP2 =                        (1 << FLASH_ST1_BP2_BIT)
+FLASH_ST1_TB =                         (1 << FLASH_ST1_TB_BIT)
+FLASH_ST1_SEC =                        (1 << FLASH_ST1_SEC_BIT)
+FLASH_ST1_SRP0 =                       (1 << FLASH_ST1_SRP0_BIT)
+
+
+# Status Register 2
+FLASH_ST2_SRP1_BIT =                   0
+FLASH_ST2_QE_BIT =                     1
+FLASH_ST2_LB1_BIT =                    3
+FLASH_ST2_LB2_BIT =                    4
+FLASH_ST2_LB3_BIT =                    5
+FLASH_ST2_CMP_BIT =                    6
+FLASH_ST2_SUS_BIT =                    7
+
+FLASH_ST2_SRP1 =                       (1 << FLASH_ST2_SRP1_BIT)
+FLASH_ST2_QE =                         (1 << FLASH_ST2_QE_BIT)
+FLASH_ST2_LB1 =                        (1 << FLASH_ST2_LB1_BIT)
+FLASH_ST2_LB2 =                        (1 << FLASH_ST2_LB2_BIT)
+FLASH_ST2_LB3 =                        (1 << FLASH_ST2_LB3_BIT)
+FLASH_ST2_CMP =                        (1 << FLASH_ST2_CMP_BIT)
+FLASH_ST2_SUS =                        (1 << FLASH_ST2_SUS_BIT)
+
+
+# Status Register 3
+FLASH_ST3_WPS_BIT =                    2
+FLASH_ST3_DRV0_BIT =                   5
+FLASH_ST3_DRV1_BIT =                   6
+FLASH_ST3_HOLD_RST_BIT =               7
+
+FLASH_ST3_WPS =                        (1 << FLASH_ST3_WPS_BIT)
+FLASH_ST3_DRV0 =                       (1 << FLASH_ST3_DRV0_BIT)
+FLASH_ST3_DRV1 =                       (1 << FLASH_ST3_DRV1_BIT)
+FLASH_ST3_HOLD_RST =                   (1 << FLASH_ST3_HOLD_RST_BIT)
+
+
+
+
+
 
 @dataclass
 class FlashAccess:
@@ -13,13 +162,13 @@ class Flash:
     def __init__(self, access: FlashAccess):
         self._access = access
 
-
-    def ID(self) -> bytes:
+    def _transfer(self, tx: bytes, rx_size: int) -> bytes:
         self._access.select_chip(True)
+        res = b""
 
         try:
-            self._access.transfer(bytes([0x9F]))
-            res = self._access.transfer(rx_size=3)
+            self._access.transfer(tx)
+            res = self._access.transfer(rx_size=rx_size)
         except:
             self._access.select_chip(False)
             raise
@@ -27,3 +176,24 @@ class Flash:
         self._access.select_chip(False)
         return res
 
+
+
+    def ID(self) -> bytes:
+        return self._transfer(bytes([FLASH_READ_IDENTIFICATION]), 3)
+
+
+    def Status_1(self) -> int:
+        return self._transfer(bytes([FLASH_READ_STATUS_1]), 1)[0]
+
+    def Status_2(self) -> int:
+        return self._transfer(bytes([FLASH_READ_STATUS_2]), 1)[0]
+
+    def Status_3(self) -> int:
+        return self._transfer(bytes([FLASH_READ_STATUS_3]), 1)[0]
+
+
+    def WriteEnable(self) -> None:
+        self._transfer(bytes([FLASH_WRITE_ENABLE]), 0)
+
+    def Erase(self) -> None:
+        self._transfer(bytes([FLASH_CHIP_ERASE]), 0)
