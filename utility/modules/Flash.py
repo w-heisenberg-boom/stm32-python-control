@@ -119,61 +119,6 @@ FLASH_GLOBAL_BLOCK_SECTOR_LOCK =       0x7E
 FLASH_GLOBAL_BLOCK_SECTOR_UNLOCK =     0x98
 
 
-# **************************************************
-# STATUS REGISTERS
-# **************************************************
-
-# Status Register 1
-FLASH_ST1_BUSY_BIT =                   0
-FLASH_ST1_WEL_BIT =                    1
-FLASH_ST1_BP0_BIT =                    2
-FLASH_ST1_BP1_BIT =                    3
-FLASH_ST1_BP2_BIT =                    4
-FLASH_ST1_TB_BIT =                     5
-FLASH_ST1_SEC_BIT =                    6
-FLASH_ST1_SRP0_BIT =                   7
-
-FLASH_ST1_BUSY =                       (1 << FLASH_ST1_BUSY_BIT)
-FLASH_ST1_WEL =                        (1 << FLASH_ST1_WEL_BIT)
-FLASH_ST1_BP0 =                        (1 << FLASH_ST1_BP0_BIT)
-FLASH_ST1_BP1 =                        (1 << FLASH_ST1_BP1_BIT)
-FLASH_ST1_BP2 =                        (1 << FLASH_ST1_BP2_BIT)
-FLASH_ST1_TB =                         (1 << FLASH_ST1_TB_BIT)
-FLASH_ST1_SEC =                        (1 << FLASH_ST1_SEC_BIT)
-FLASH_ST1_SRP0 =                       (1 << FLASH_ST1_SRP0_BIT)
-
-
-# Status Register 2
-FLASH_ST2_SRP1_BIT =                   0
-FLASH_ST2_QE_BIT =                     1
-FLASH_ST2_LB1_BIT =                    3
-FLASH_ST2_LB2_BIT =                    4
-FLASH_ST2_LB3_BIT =                    5
-FLASH_ST2_CMP_BIT =                    6
-FLASH_ST2_SUS_BIT =                    7
-
-FLASH_ST2_SRP1 =                       (1 << FLASH_ST2_SRP1_BIT)
-FLASH_ST2_QE =                         (1 << FLASH_ST2_QE_BIT)
-FLASH_ST2_LB1 =                        (1 << FLASH_ST2_LB1_BIT)
-FLASH_ST2_LB2 =                        (1 << FLASH_ST2_LB2_BIT)
-FLASH_ST2_LB3 =                        (1 << FLASH_ST2_LB3_BIT)
-FLASH_ST2_CMP =                        (1 << FLASH_ST2_CMP_BIT)
-FLASH_ST2_SUS =                        (1 << FLASH_ST2_SUS_BIT)
-
-
-# Status Register 3
-FLASH_ST3_WPS_BIT =                    2
-FLASH_ST3_DRV0_BIT =                   5
-FLASH_ST3_DRV1_BIT =                   6
-FLASH_ST3_HOLD_RST_BIT =               7
-
-FLASH_ST3_WPS =                        (1 << FLASH_ST3_WPS_BIT)
-FLASH_ST3_DRV0 =                       (1 << FLASH_ST3_DRV0_BIT)
-FLASH_ST3_DRV1 =                       (1 << FLASH_ST3_DRV1_BIT)
-FLASH_ST3_HOLD_RST =                   (1 << FLASH_ST3_HOLD_RST_BIT)
-
-
-
 
 
 
