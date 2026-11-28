@@ -39,7 +39,7 @@ FLASH_READ_STATUS_2 =                 0x35
 FLASH_READ_STATUS_3 =                 0x15
 
 FLASH_WRITE_ENABLE =                  0x06
-FLASH_VOLATILE_SR_WRITE_ENABLE =       0x50
+FLASH_VOLATILE_SR_WRITE_ENABLE =      0x50
 FLASH_WRITE_DISABLE =                 0x04
 
 FLASH_WRITE_STATUS_1 =                0x01
@@ -97,7 +97,7 @@ FLASH_ID_MEMORY_TYPE_IDX =             1
 FLASH_ID_CAPACITY_IDX =                2
 
 FLASH_READ_SFDP_REGISTERS =           0x5A
-FLASH_MANUFACTURER_DEVICE_ID =         0x90
+FLASH_MANUFACTURER_DEVICE_ID =        0x90
 
 FLASH_ERASE_SECURITY_REGISTERS =      0x44
 FLASH_PROGRAM_SECURITY_REGISTERS =    0x42
@@ -106,7 +106,7 @@ FLASH_READ_SECURITY_REGISTERS =       0x48
 FLASH_MANUFACTURER_DEVICE_ID_DUAL =   0x92
 FLASH_MANUFACTURER_DEVICE_ID_QUAD =   0x94
 
-FLASH_UNIQUE_ID_NUMBER =               0x4B
+FLASH_UNIQUE_ID_NUMBER =              0x4B
 
 
 # Lock Commands
@@ -184,6 +184,14 @@ class FlashAccess:
 
 
 class Flash:
+    @dataclass
+    class Descriptor:
+        Manufacturer: int
+        MemoryType: int
+        Capacity: int
+        UniqueID: bytes
+
+
     def __init__(self, access: FlashAccess):
         self._access = access
 
@@ -203,22 +211,25 @@ class Flash:
 
 
 
-    def ID(self) -> bytes:
-        return self._transfer(bytes([FLASH_READ_IDENTIFICATION]), 3)
+    def GetDescriptor(self) -> Descriptor:
+        main = self._transfer(bytes([FLASH_READ_IDENTIFICATION]), 3)
+        id = self._transfer(bytes([FLASH_UNIQUE_ID_NUMBER]), 12)
+
+        return self.Descriptor(
+            Manufacturer    = main[FLASH_ID_MANUFACTURER_IDX],
+            MemoryType      = main[FLASH_ID_MEMORY_TYPE_IDX],
+            Capacity        = main[FLASH_ID_CAPACITY_IDX],
+            UniqueID        = id[4:] )
 
 
-    def Status_1(self) -> int:
-        return self._transfer(bytes([FLASH_READ_STATUS_1]), 1)[0]
 
-    def Status_2(self) -> int:
-        return self._transfer(bytes([FLASH_READ_STATUS_2]), 1)[0]
-
-    def Status_3(self) -> int:
-        return self._transfer(bytes([FLASH_READ_STATUS_3]), 1)[0]
-
-
-    def WriteEnable(self) -> None:
+    def WriteEnable(self):
         self._transfer(bytes([FLASH_WRITE_ENABLE]), 0)
 
-    def Erase(self) -> None:
+    def EraseChip(self): 
         self._transfer(bytes([FLASH_CHIP_ERASE]), 0)
+
+
+    def IsChipBusy(self) -> bool:
+        status = self._transfer(bytes([FLASH_READ_STATUS_1]), 1)[0]
+        return bool(status & 0x01)

@@ -141,21 +141,25 @@ class Application:
     def _cb_flash_ID(self):
         try:
             self._configure_spi()
-            res =  self.flash.ID()
+            desc = self.flash.GetDescriptor()
         except Exception as e:
             print(f"Read flash ID failed: {e}")
             return
+
+
+        self.fieldFlashInfo.SetManufacturer( self._get_str_from_hash(MANUFACTURER, desc.Manufacturer) )
+        self.fieldFlashInfo.SetMemoryType( self._get_str_from_hash(MEMORY_TYPE, desc.MemoryType) )
+        self.fieldFlashInfo.SetCapacity( self._get_str_from_hash(CAPACITY, desc.Capacity) )
+        self.fieldFlashInfo.SetUniqueID( desc.UniqueID.hex(':').upper() )
         
-        self.fieldFlashInfo.SetField(FieldFlashInformation.InfoType.Manufacturer, self._get_str_from_hash(MANUFACTURER, res[0]))
-        self.fieldFlashInfo.SetField(FieldFlashInformation.InfoType.MemoryType, self._get_str_from_hash(MEMORY_TYPE, res[1]))
-        self.fieldFlashInfo.SetField(FieldFlashInformation.InfoType.Capacity, self._get_str_from_hash(CAPACITY, res[2]))
+
 
 
     def _cb_flash_ERASE(self):
         try:
             self._configure_spi()
             self.flash.WriteEnable()
-            self.flash.Erase()
+            self.flash.EraseChip()
         except Exception as e:
             print(f"Erase flash failed: {e}")
             return
@@ -166,8 +170,7 @@ class Application:
     def _cb_flash_STATUS(self):
         try:
             self._configure_spi()
-            res = self.flash.Status_1()
-            print(f"{''.join('{:02X} '.format(x) for x in bytes([res]))}")
+            print(self.flash.IsChipBusy())
         except Exception as e:
             print(f"Read flash Status 1 failed: {e}")
             return

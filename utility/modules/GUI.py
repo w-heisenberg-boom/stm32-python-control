@@ -291,16 +291,9 @@ class FieldSPISelection(ttk.Frame):
 # **************************************************    
 
 class FieldFlashInformation(ttk.Frame):
-    class InfoType(Enum):
-        Manufacturer    = 0
-        MemoryType      = 1
-        Capacity        = 2
-        UniqueID        = 3
-
     def __init__(self, parent):
         super().__init__(parent)
         self._parent = parent
-
 
         self._manufacturer = InformationLabel(self, "Manufacturer")
         self._manufacturer.grid(row=0, column=0, sticky="ew")
@@ -316,17 +309,17 @@ class FieldFlashInformation(ttk.Frame):
         
         self.columnconfigure(0, weight=1)
 
-    def SetField(self, info: InfoType, val: str):
-        if info == self.InfoType.Manufacturer:
-            self._manufacturer.set(val)
-        elif info == self.InfoType.MemoryType:
-            self._memory_type.set(val)
-        elif info == self.InfoType.Capacity:
-            self._capacity.set(val)
-        elif info == self.InfoType.UniqueID:
-            self._unique_id.set(val)                                    
-        else:
-            raise ValueError("Unknown info type for Flash Information!")
+    def SetManufacturer(self, val: str):
+        self._manufacturer.set(val)
+
+    def SetMemoryType(self, val: str):
+        self._memory_type.set(val)
+
+    def SetCapacity(self, val: str):
+        self._capacity.set(val)
+
+    def SetUniqueID(self, val: str):
+        self._unique_id.set(val)        
 
 
 # **************************************************
